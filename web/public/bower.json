@@ -1,0 +1,21 @@
+{
+  "name": "archive",
+  "version": "0.0.1",
+  "homepage": "https://github.com/rmi22186/2014-12-web-historian",
+  "authors": [
+    "Hack Reactor Students <accounts@hackreactor.com>"
+  ],
+  "description": "andy and rob",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.3"
+  }
+}
