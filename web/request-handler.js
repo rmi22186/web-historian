@@ -1,13 +1,11 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
-var httpHelpers = require('http-helpers');
+var httpHelpers = require('./http-helpers');
 var queryString = require('querystring');
 var urlMod = require('url');
 // require more modules/folders here!
 
 exports.handleRequest = function (request, response) {
-  // res.end(archive.paths.list);
-  console.log(request.method);
 
   if (request.method === 'POST') {
     // look into archive for the request url
@@ -26,13 +24,16 @@ exports.handleRequest = function (request, response) {
       response.writeHead(statusCode, headers);
       var url = queryString.parse(data).url;
 
-      archive.handleUrl(url);
+      archive.handleUrl(url, response);
 
-      response.end('ping!');
+      // response.end('ping!');
     });
 
 
 
+  } else if (request.method === 'GET') {
+    response.writeHead(200, httpHelpers.headers);
+    response.end();
   } else if (request.method === 'OPTIONS') {
     response.writeHead(200, httpHelpers.headers);
     response.end();

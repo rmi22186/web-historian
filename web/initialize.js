@@ -1,23 +1,26 @@
 var fs = require('fs');
+var archive = require('../helpers/archive-helpers.js');
 
 // Sync is ok here because this is called just once on startup.
 module.exports = function () {
   // if the archive folder doesn't exist, create it.
-  if (!fs.existsSync("./archives")) {
+  if (!fs.existsSync(archive.paths.archive)) {
     // We use fs.mkdirSync to create the folder
-    fs.mkdirSync("./archives");
+    fs.mkdirSync(archive.paths.archive);
   }
 
   // if the file doesn't exist, create it.
-  if (!fs.existsSync("./archives/sites.txt")) {
-    // We use fs.openSync to create the file
-    var file = fs.openSync("./archives/sites.txt", "w");
-    fs.closeSync(file);
+  if (!fs.existsSync(archive.paths.json)) {
+    fs.writeFileSync(archive.paths.json, JSON.stringify({}), 'utf8', function(err) {
+      if (err) throw err;
+    })
   }
 
   // if the folder doesn't exist, create it.
-  if (!fs.existsSync("./archives/sites")) {
+  if (!fs.existsSync(archive.paths.archivedSites)) {
     // We use fs.mkdirSync to create the folder
-    fs.mkdirSync("./archives/sites");
+    fs.mkdirSync(archive.paths.archivedSites);
   }
+
+
 };

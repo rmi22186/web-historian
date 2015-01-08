@@ -3,6 +3,7 @@
 <head>
   <link rel="stylesheet" type="text/css" href="styles.css" />
   <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="script.js"></script>
 </head>
 <body>
   Enter a URL here:
@@ -10,31 +11,5 @@
     <input type="input" name="url" class='urlInput' autofocus="true"></input>
   </form>
 </body>
-
-<script>
-  $(function() {
-    $('.urlForm').on('submit', function(e) {
-      e.preventDefault();
-      console.log('hi!');
-
-      $.ajax({
-        url: 'http://127.0.0.1:8080',
-        type: 'POST',
-        data: {url: $('.urlInput').val() },
-        contentType: 'application/json',
-        success: function(json){
-          console.log(json);
-          console.log('successfully loaded');
-        },
-        error: function() {
-          console.log('error loading')
-        }
-      });
-    });
-
-
-  });
-</script>
-
 </html>
 
