@@ -6,14 +6,16 @@ var urlMod = require('url');
 var archive = require('../helpers/archive-helpers');
 var http = require('http-request');
 var _ = require('underscore');
+var fs = require('fs');
 
 archive.readListOfUrls(function (data) {
   var urls = JSON.parse(data);
 
+  // if false (not archived), then scrape it, write it,  --- set url to true, and rewrite json, if necessary
   _.each(urls, function (isArchived, url) {
     if (!isArchived) {
 
-      var downloadLocation = archive.paths.archivedSites + '/' + url;
+      var downloadLocation = archive.paths.archivedSites + '/' + url + '.html';
       console.log(downloadLocation);
       http.get({
         url: url,
@@ -25,8 +27,16 @@ archive.readListOfUrls(function (data) {
           console.log(err);
           return;
         }
+        else {
+          urls[url] = true;
+
+          fs.writeFile(archive.paths.json, JSON.stringify(urls, null, 2), 'utf8', function(err) {
+            if (err) throw err;
+          })
+        }
       });
-  // if false, not archived, scrape it, write it,  --- set url to true, and rewrite json, if necessary
+
+
     }
   })
 
