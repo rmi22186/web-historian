@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var httpHelpers = require('../web/http-helpers.js')
 
 
 /*
@@ -11,11 +12,11 @@ var _ = require('underscore');
  */
 
 exports.paths = {
-  'siteAssets' : path.join(__dirname, './public'),
+  'siteAssets' : path.join(__dirname, '../web/public'),
   'archivedSites' : path.join(__dirname, '../web/archives/sites'),
   'json' : path.join(__dirname, '../web/archives/sites.json'),
   'archive' : path.join(__dirname, '../web/archives'),
-  'loading' : path.join(__dirname, '../web/public/loading.html'),
+  'loading' : path.join(__dirname, '../web/public/loading.html')
 };
 
 // Used for stubbing paths for jasmine tests, do not modify
@@ -40,21 +41,20 @@ exports.initialize = function(pathsObj){
 
   exports.handleUrl = function(url, response){
     fs.readFile(exports.paths.json, 'utf8', function (err, data) {
-      console.log(exports.paths.json);
       urls = JSON.parse(data);
       if (err) throw err;
 
       if (urls[url] !== undefined) {
         if (urls[url]) {
           // TODO : SERVE
-          response.end(exports.paths.archivedSites + '/' + url + '.html');
+          httpHelpers.serveFile(response, exports.paths.archivedSites + '/' + url + '.html');
         } else {
           // TODO : redirect to loading
-          response.end(exports.paths.loading);
+          httpHelpers.serveFile(response, exports.paths.loading);
         }
       } else {
         exports.addUrlToList(urls, url);
-        response.end(exports.paths.loading);
+        httpHelpers.serveRedirect(response, '/loading.html');
       }
     });
 

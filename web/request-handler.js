@@ -3,6 +3,7 @@ var archive = require('../helpers/archive-helpers');
 var httpHelpers = require('./http-helpers');
 var queryString = require('querystring');
 var urlMod = require('url');
+var fs = require('fs');
 // require more modules/folders here!
 
 exports.handleRequest = function (request, response) {
@@ -20,10 +21,7 @@ exports.handleRequest = function (request, response) {
 
     request.on("end", function() {
       var headers = httpHelpers.headers;
-      var statusCode = 200;
-      response.writeHead(statusCode, headers);
       var url = queryString.parse(data).url;
-
       archive.handleUrl(url, response);
 
       // response.end('ping!');
@@ -32,11 +30,30 @@ exports.handleRequest = function (request, response) {
 
 
   } else if (request.method === 'GET') {
-    response.writeHead(200, httpHelpers.headers);
-    response.end();
+
+
+    var url = urlMod.parse(request.url).pathname.slice(1);
+    if (url === '') {
+      url = 'index.html';
+    }
+
+    fs.readFile(archive.paths.siteAssets + '/' + url, 'utf8', function(err, data) {
+      if (err) {
+        //check in archive
+        fs.readFile(archive.paths.archivedSites + '/' + url, 'utf8', function(err, data) {
+          if (err) {
+            httpHelpers.serve404(response);
+          } else {
+            httpHelpers.serveAssets(response, data);
+          }
+        });
+      } else  {
+        httpHelpers.serveAssets(response, data);
+      }
+    });
+
   } else if (request.method === 'OPTIONS') {
-    response.writeHead(200, httpHelpers.headers);
-    response.end();
+    httpHelpers.serveAssets(response, null);
   }
 };
 
